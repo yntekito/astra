@@ -12,13 +12,10 @@ Parameters:
     Default: dev
 
 Resources:
-  MyUserPool:
+  CognitoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: !Sub "${AppName}-${Environment}-UserPool"
-      AutoVerifiedAttributes:
-        - email
-      MfaConfiguration: OPTIONAL
       Policies:
         PasswordPolicy:
           MinimumLength: 8
@@ -26,44 +23,57 @@ Resources:
           RequireLowercase: true
           RequireNumbers: true
           RequireSymbols: false
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      UsernameConfiguration:
+        CaseSensitive: false
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+      MfaConfiguration: 'ON'
       Schema:
         - Name: email
           Required: true
           Mutable: true
+      EmailConfiguration:
+        EmailSendingAccount: COGNITO_DEFAULT
 
-  MyUserPoolClient:
+  CognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
       ClientName: !Sub "${AppName}-${Environment}-Client"
-      UserPoolId: !Ref MyUserPool
-      GenerateSecret: false
+      UserPoolId: !Ref CognitoUserPool
+      GenerateSecret: true
       ExplicitAuthFlows:
         - ADMIN_NO_SRP_AUTH
         - USER_PASSWORD_AUTH
         - USER_SRP_AUTH
       RefreshTokenValidity: 30
 
-  MyUserPoolDomain:
+  CognitoUserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       Domain: !Sub "${AppName}-${Environment}-auth"
-      UserPoolId: !Ref MyUserPool
+      UserPoolId: !Ref CognitoUserPool
 
 Outputs:
   UserPoolId:
     Description: Cognito User Pool ID
-    Value: !Ref MyUserPool
+    Value: !Ref CognitoUserPool
     Export:
       Name: !Sub "${AppName}-${Environment}-UserPoolId"
 
   UserPoolClientId:
     Description: Cognito User Pool Client ID
-    Value: !Ref MyUserPoolClient
+    Value: !Ref CognitoUserPoolClient
     Export:
       Name: !Sub "${AppName}-${Environment}-UserPoolClientId"
 
   UserPoolDomain:
     Description: Cognito Hosted UI Domain
-    Value: !Ref MyUserPoolDomain
+    Value: !Ref CognitoUserPoolDomain
     Export:
       Name: !Sub "${AppName}-${Environment}-UserPoolDomain"

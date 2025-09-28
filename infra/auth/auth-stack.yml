@@ -1,20 +1,15 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Cognito User Pool 用認証スタック（共通パラメータ参照）
 
-Parameters:
-  AppName:
-    Type: String
-    Default: !ImportValue Param-AppName
-  Environment:
-    Type: String
-    Default: !ImportValue Param-Environment
-
 Resources:
 
   MyUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
-      UserPoolName: !Sub "${AppName}-${Environment}-UserPool"
+      UserPoolName: !Sub 
+        - "${AppName}-${Environment}-UserPool"
+        - AppName: !ImportValue Param-AppName
+          Environment: !ImportValue Param-Environment
       AutoVerifiedAttributes:
         - email
       MfaConfiguration: OPTIONAL
@@ -33,7 +28,10 @@ Resources:
   MyUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      ClientName: !Sub "${AppName}-${Environment}-Client"
+      ClientName: !Sub 
+        - "${AppName}-${Environment}-Client"
+        - AppName: !ImportValue Param-AppName
+          Environment: !ImportValue Param-Environment
       UserPoolId: !Ref MyUserPool
       GenerateSecret: false
       ExplicitAuthFlows:
@@ -45,7 +43,11 @@ Resources:
   MyUserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      Domain: !Sub "${AppName}-${Environment}-auth"
+      Domain: !Sub 
+        - "${AppName}-${Environment}-auth"
+        - AppName: !ImportValue Param-AppName
+          Environment: !ImportValue Param-Environment
+      UserPoolId: !Ref MyUserPool
 
 Outputs:
 
@@ -53,16 +55,25 @@ Outputs:
     Description: Cognito User Pool ID
     Value: !Ref MyUserPool
     Export:
-      Name: !Sub "${AppName}-${Environment}-UserPoolId"
+      Name: !Sub 
+        - "${AppName}-${Environment}-UserPoolId"
+        - AppName: !ImportValue Param-AppName
+          Environment: !ImportValue Param-Environment
 
   UserPoolClientId:
     Description: Cognito User Pool Client ID
     Value: !Ref MyUserPoolClient
     Export:
-      Name: !Sub "${AppName}-${Environment}-UserPoolClientId"
+      Name: !Sub 
+        - "${AppName}-${Environment}-UserPoolClientId"
+        - AppName: !ImportValue Param-AppName
+          Environment: !ImportValue Param-Environment
 
   UserPoolDomain:
     Description: Cognito Hosted UI Domain
     Value: !Ref MyUserPoolDomain
     Export:
-      Name: !Sub "${AppName}-${Environment}-UserPoolDomain"
+      Name: !Sub 
+        - "${AppName}-${Environment}-UserPoolDomain"
+        - AppName: !ImportValue Param-AppName
+          Environment: !ImportValue Param-Environment

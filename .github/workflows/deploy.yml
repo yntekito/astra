@@ -21,13 +21,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy Parameters Stack
-        run: |
-          aws cloudformation deploy \
-            --stack-name env-stack \
-            --template-file infra/common/env-stack.yml \
-            --capabilities CAPABILITY_NAMED_IAM
-
       - name: Deploy Auth Stack (Cognito)
         run: |
           aws cloudformation deploy \

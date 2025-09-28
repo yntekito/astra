@@ -1,0 +1,39 @@
+name: Deploy AWS Stacks
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy Parameters Stack
+        run: |
+          aws cloudformation deploy \
+            --stack-name env-stack \
+            --template-file infra/common/env-stack.yml \
+            --capabilities CAPABILITY_NAMED_IAM
+
+      - name: Deploy Auth Stack (Cognito)
+        run: |
+          aws cloudformation deploy \
+            --stack-name auth-stack \
+            --template-file infra/auth/auth-stack.yml \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+              AppName=$(aws cloudformation describe-stacks --stack-name parameters-stack --query "Stacks[0].Outputs[?OutputKey=='AppName'].OutputValue" --output text) \
+              Environment=$(aws cloudformation describe-stacks --stack-name parameters-stack --query "Stacks[0].Outputs[?OutputKey=='Environment'].OutputValue" --output text)

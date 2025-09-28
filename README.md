@@ -17,7 +17,7 @@ myapp-repo/
 │ ├─ events/
 │ └─ build/
 │
-├─ iac/   インフラ
+├─ infra/   インフラ
 │ ├─ auth/
 │ │ └─ auth-stack.yml
 │ ├─ network/

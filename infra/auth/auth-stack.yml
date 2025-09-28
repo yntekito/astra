@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Cognito User Pool 用認証スタック（共通パラメータ参照）
+
+Parameters:
+  AppName:
+    Type: String
+    Default: !ImportValue Param-AppName
+  Environment:
+    Type: String
+    Default: !ImportValue Param-Environment
+
+Resources:
+
+  MyUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "${AppName}-${Environment}-UserPool"
+      AutoVerifiedAttributes:
+        - email
+      MfaConfiguration: OPTIONAL
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      Schema:
+        - Name: email
+          Required: true
+          Mutable: true
+
+  MyUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub "${AppName}-${Environment}-Client"
+      UserPoolId: !Ref MyUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+        - USER_PASSWORD_AUTH
+        - USER_SRP_AUTH
+      RefreshTokenValidity: 30
+
+  MyUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Sub "${AppName}-${Environment}-auth"
+
+Outputs:
+
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref MyUserPool
+    Export:
+      Name: !Sub "${AppName}-${Environment}-UserPoolId"
+
+  UserPoolClientId:
+    Description: Cognito User Pool Client ID
+    Value: !Ref MyUserPoolClient
+    Export:
+      Name: !Sub "${AppName}-${Environment}-UserPoolClientId"
+
+  UserPoolDomain:
+    Description: Cognito Hosted UI Domain
+    Value: !Ref MyUserPoolDomain
+    Export:
+      Name: !Sub "${AppName}-${Environment}-UserPoolDomain"

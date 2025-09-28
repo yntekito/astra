@@ -27,6 +27,4 @@ jobs:
             --stack-name auth-stack \
             --template-file infra/auth/auth-stack.yml \
             --capabilities CAPABILITY_NAMED_IAM \
-            --parameter-overrides \
-              AppName=$(aws cloudformation describe-stacks --stack-name parameters-stack --query "Stacks[0].Outputs[?OutputKey=='AppName'].OutputValue" --output text) \
-              Environment=$(aws cloudformation describe-stacks --stack-name parameters-stack --query "Stacks[0].Outputs[?OutputKey=='Environment'].OutputValue" --output text)
+

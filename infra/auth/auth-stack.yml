@@ -52,9 +52,8 @@ Resources:
       UserPoolId: !Ref CognitoUserPool
       GenerateSecret: true
       ExplicitAuthFlows:
-        - ADMIN_NO_SRP_AUTH
-        - USER_PASSWORD_AUTH
-        - USER_SRP_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
       RefreshTokenValidity: 30
 
   CognitoUserPoolDomain:

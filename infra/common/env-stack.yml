@@ -1,29 +1,29 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: 共通環境変数用スタック
+# AWSTemplateFormatVersion: '2010-09-09'
+# Description: 共通環境変数用スタック
 
-Parameters:
-  AppName:
-    Type: String
-    Default: astra
-    Description: アプリケーション名
-  Environment:
-    Type: String
-    Default: dev
-    AllowedValues:
-      - dev
-      - stg
-      - prod
-    Description: デプロイ環境
+# Parameters:
+#   AppName:
+#     Type: String
+#     Default: astra
+#     Description: アプリケーション名
+#   Environment:
+#     Type: String
+#     Default: dev
+#     AllowedValues:
+#       - dev
+#       - stg
+#       - prod
+#     Description: デプロイ環境
 
-Resources: {}
+# Resources: {}
 
-Outputs:
-  AppName:
-    Value: !Ref AppName
-    Export:
-      Name: Param-AppName
+# Outputs:
+#   AppName:
+#     Value: !Ref AppName
+#     Export:
+#       Name: Param-AppName
 
-  Environment:
-    Value: !Ref Environment
-    Export:
-      Name: Param-Environment
+#   Environment:
+#     Value: !Ref Environment
+#     Export:
+#       Name: Param-Environment

@@ -2,6 +2,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Cognito User Pool 用認証スタック
 
 Parameters:
+  DomainName:
+    Type: String
+    Description: Domain name for the callback URL
+    Default: example.com
   AppName:
     Type: String
     Description: Application name
@@ -60,20 +64,9 @@ Resources:
       UserPoolId: !Ref CognitoUserPool
 
 Outputs:
-  UserPoolId:
-    Description: Cognito User Pool ID
-    Value: !Ref CognitoUserPool
-    Export:
-      Name: !Sub "${AppName}-${Environment}-UserPoolId"
-
-  UserPoolClientId:
-    Description: Cognito User Pool Client ID
-    Value: !Ref CognitoUserPoolClient
-    Export:
-      Name: !Sub "${AppName}-${Environment}-UserPoolClientId"
-
   UserPoolDomain:
-    Description: Cognito Hosted UI Domain
-    Value: !Ref CognitoUserPoolDomain
-    Export:
-      Name: !Sub "${AppName}-${Environment}-UserPoolDomain"
+    Description: Domain of the Cognito User Pool
+    Value: !Sub ${CognitoUserPoolDomain}.auth.${AWS::Region}.amazoncognito.com
+  CallbackURL:
+    Description: Callback URL for the Cognito User Pool Client
+    Value: !Sub https://${DomainName}/oauth2/idpresponse

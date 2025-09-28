@@ -1,5 +1,5 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: Cognito User Pool 用認証スタック
+AWSTemplateFormatVersion: 2010-09-09
+Description: Cognito User Pool
 
 Parameters:
   DomainName:
@@ -37,7 +37,7 @@ Resources:
         CaseSensitive: false
       VerificationMessageTemplate:
         DefaultEmailOption: CONFIRM_WITH_CODE
-      MfaConfiguration: 'ON'
+      MfaConfiguration: "OFF"
       Schema:
         - Name: email
           Required: true
